@@ -156,7 +156,7 @@ async function logoutUserController(req, res) {
 /**
  * @name getMeController
  * @description get user details by verifying the token in cookie
- * @route get /api/auth/me
+ * @route get /api/auth/getme
  * @access private
  */
 async function getMeUserController(req, res) {
