@@ -4,77 +4,70 @@ import styles from "./Login.module.scss";
 import { useAuth } from "../hooks/useAuth";
 
 function Login() {
-    const [form, setForm] = useState({
-        email: "",
-        password: "",
-    });
-    const { userLogin } = useAuth()
-    const navigate = useNavigate()
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-        setForm(prev => ({
-            ...prev,
-            [name]: value
-        }))
+  const { handelUserLogin ,loading} = useAuth();
+  const navigate = useNavigate();
 
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        await userLogin({ email: form.email, password: form.password })
-        navigate('/')
-    };
+    try {
+      await handelUserLogin({ email, password });
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  if(loading)return (<h2>loading</h2>)
+  return (
+    <main className={styles.wrapper}>
+      <section className={styles.card}>
+        <header className={styles.header}>
+          <h1>Welcome Back</h1>
+          <p>Please enter your details to sign in</p>
+        </header>
 
-    return (
-        <main className={styles.wrapper}>
-            <section className={styles.card}>
-                <header className={styles.header}>
-                    <h1>Welcome Back</h1>
-                    <p>Please enter your details to sign in</p>
-                </header>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.field}>
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}               // State → UI
+              onChange={(e) => setEmail(e.target.value)} // UI → State
+              required
+            />
+          </div>
 
-                <form onSubmit={handleSubmit} className={styles.form}>
-                    <div className={styles.field}>
-                        <label htmlFor="email">Email</label>
-                        <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            placeholder="you@example.com"
-                            value={form.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+          <div className={styles.field}>
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-                    <div className={styles.field}>
-                        <label htmlFor="password">Password</label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            placeholder="••••••••"
-                            value={form.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+          <button type="submit" className="button">
+            Sign In
+          </button>
+        </form>
 
-                    <button type="submit" className="button">
-                        Sign In
-                    </button>
-                </form>
-
-                <footer className={styles.footer}>
-                    <p>
-                        Don’t have an account?{" "}
-                        <Link to="/register">Create account</Link>
-                    </p>
-                </footer>
-            </section>
-        </main>
-    );
+        <footer className={styles.footer}>
+          <p>
+            Don’t have an account?{" "}
+            <Link to="/register">Create account</Link>
+          </p>
+        </footer>
+      </section>
+    </main>
+  );
 }
 
 export default Login;

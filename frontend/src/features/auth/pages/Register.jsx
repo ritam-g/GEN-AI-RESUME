@@ -1,29 +1,30 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import styles from "./Register.module.scss";
+import { useAuth } from "../hooks/useAuth";
 
 function Register() {
-    const [form, setForm] = useState({
-        username: "",
-        email: "",
-        password: "",
-    });
-   const navigate= useNavigate()
-    function handleChange(e) {
-        const { name, value } = e.target;
-        setForm((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    }
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    function handleSubmit(e) {
+    const navigate = useNavigate();
+    const { handelRegisterUser } = useAuth()
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form Data:", form);
+
+        const formData = {
+            username,
+            email,
+            password,
+        };
+
+        console.log("Form Data:", formData);
 
         // TODO: Call API here
-        navigate('/')
-    }
+        await handelRegisterUser(formData)
+        navigate("/");
+    };
 
     return (
         <main className={styles.register}>
@@ -36,10 +37,10 @@ function Register() {
                         <input
                             type="text"
                             id="username"
-                            name="username"
                             placeholder="Enter your username"
-                            value={form.username}
-                            onChange={handleChange}
+                            value={username}                  // State → UI
+                            onChange={(e) => setUsername(e.target.value)} // UI → State
+                            required
                         />
                     </div>
 
@@ -48,10 +49,10 @@ function Register() {
                         <input
                             type="email"
                             id="email"
-                            name="email"
                             placeholder="Enter your email"
-                            value={form.email}
-                            onChange={handleChange}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
                         />
                     </div>
 
@@ -60,14 +61,16 @@ function Register() {
                         <input
                             type="password"
                             id="password"
-                            name="password"
                             placeholder="Enter your password"
-                            value={form.password}
-                            onChange={handleChange}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
                         />
                     </div>
 
-                    <button type="submit" className="button">Register</button>
+                    <button type="submit" className="button">
+                        Register
+                    </button>
                 </form>
 
                 <p className={styles.loginText}>
