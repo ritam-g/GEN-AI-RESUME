@@ -2,13 +2,19 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import styles from "./Login.module.scss";
 import { useAuth } from "../hooks/useAuth";
+import { useEffect } from "react";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { handelUserLogin ,loading} = useAuth();
+  const { handelUserLogin, user } = useAuth();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (user) {
+      navigate('/')
+    }
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +26,6 @@ function Login() {
       console.error(err);
     }
   };
-  if(loading)return (<h2>loading</h2>)
   return (
     <main className={styles.wrapper}>
       <section className={styles.card}>

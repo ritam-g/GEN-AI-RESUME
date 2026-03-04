@@ -28,4 +28,5 @@ authRoute.get('/logout',logoutUserController)
  * @acess protected
  */
 authRoute.get('/getme',authUser,getMeUserController)
+
 module.exports=authRoute
