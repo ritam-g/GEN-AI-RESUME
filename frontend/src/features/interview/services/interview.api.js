@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const api = axios.create({
     baseURL: 'http://localhost:3000/api/interview',
-    withCredentials:true
+    withCredentials: true
 })
 
 export async function generateInterviewReport({ jobdescribe, selfdescribe, resumeFile }) {
@@ -19,12 +19,18 @@ export async function generateInterviewReport({ jobdescribe, selfdescribe, resum
     return response.data
 }
 
-export async function getInterviewReportById({interviewId}) {
-    const response=await api.get(`/report/${interviewId}`)
+export async function getInterviewReportById({ interviewId }) {
+    const response = await api.get(`/report/${interviewId}`)
     return response.data
 }
 export async function getInterviewAllReport() {
-    const response=await api.get(`/`)
+    const response = await api.get(`/`)
+    return response.data
+}
+export async function generateResumePdf({ interviewId }) {
+    const response = await api.get(`/pdf/${interviewId}`, {
+        responseType: "blob"
+    })
     return response.data
 }
 

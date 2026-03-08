@@ -94,7 +94,7 @@ const RoadMapDay = ({ day }) => (
 const Interview = () => {
 
   const [activeNav, setActiveNav] = useState('technical')
-  const { generateReportById, report, loading } = useInterview()
+  const { generateReportById, report, loading, getResumePdf } = useInterview()
   // Dummy Data (same schema as backend)
   const { interviewId } = useParams()
   useEffect(() => {
@@ -157,7 +157,11 @@ const Interview = () => {
 
           </div>
 
-          <button className='button primary-button'>
+          <button
+            onClick={() => {
+              getResumePdf(interviewId)
+            }}
+            className='button primary-button'>
             Download Resume
           </button>
 

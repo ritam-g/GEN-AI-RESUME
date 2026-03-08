@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { generateInterviewReport, getInterviewReportById, getInterviewAllReport } from "../services/interview.api";
+import { generateInterviewReport, getInterviewReportById, getInterviewAllReport, generateResumePdf } from "../services/interview.api";
 import { Context } from "../context/interviewContext";
 
 export function useInterview() {
@@ -50,5 +50,23 @@ export function useInterview() {
             setLoading(false)
         }
     }
-    return { generateReport, getUserAllReports, generateReportById, loading, report, reports }
+    const getResumePdf = async (interviewReportId) => {
+        setLoading(true)
+        let response = null
+        try {
+            response = await generateResumePdf({ interviewId: interviewReportId })
+            const url = window.URL.createObjectURL(new Blob([response], { type: "application/pdf" }))
+            const link = document.createElement("a")
+            link.href = url
+            link.setAttribute("download", `resume_${interviewReportId}.pdf`)
+            document.body.appendChild(link)
+            link.click()
+        }
+        catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+    return { generateReport, getUserAllReports, generateReportById, loading, report, reports, getResumePdf }
 }
