@@ -1,6 +1,6 @@
 const express = require('express');
 const authUser = require('../middleware/auth.middleware');
-const { generateInterviewController, interviewRepoerByIdController, getAllInterviewReports } = require('../controller/interview.controller');
+const { generateInterviewController, interviewRepoerByIdController, getAllInterviewReports, genereateJobReadyPdfController } = require('../controller/interview.controller');
 const upload = require('../middleware/file.middleware');
 
 
@@ -35,6 +35,13 @@ interviewRoute.get('/report/:interviewId', authUser, interviewRepoerByIdControll
  * @acess private
  */
 
-interviewRoute.get('/', authUser,getAllInterviewReports)
+interviewRoute.get('/', authUser, getAllInterviewReports)
+/**
+ * @route get /api/interview/pdf/:interviewId
+ * @description it will pdf of based ono job friendly 
+ * @acess private
+ */
+
+interviewRoute.get('/pdf/:interviewId', authUser, genereateJobReadyPdfController)
 
 module.exports = interviewRoute

@@ -1,6 +1,7 @@
 const { PDFParse } = require('pdf-parse');
-const interviewReportByAi = require("../services/ai.service");
+const { interviewReportByAi, generateResumePdf } = require("../services/ai.service");
 const interviewReportModel = require("../model/interviewReport.model");
+
 /**
  * 
  * @param {jobdescribe, selfdescribe} req 
@@ -11,7 +12,7 @@ async function generateInterviewController(req, res) {
     try {
         const resumeFile = req.file
         // console.log('hit');
-        
+
         if (!resumeFile) {
             return res.status(400).json({ message: "resume file is required" })
         }
@@ -97,4 +98,42 @@ async function getAllInterviewReports(req, res) {
     }
 
 }
-module.exports = { generateInterviewController, interviewRepoerByIdController, getAllInterviewReports }
+/**
+ * @description it wil return pdf of resume which is sutable for the job dexcription 
+ *  */
+async function genereateJobReadyPdfController(req, res) {
+    try {
+        const { interviewId } = req.params
+
+        const interviewReport = await interviewReportModel.findById(interviewId)
+
+        if (!interviewReport) {
+            return res.status(404).json({
+                success: false,
+                message: 'Interview report not found'
+            })
+        }
+
+        const pdfBuffer = await generateResumePdf({
+            resume: interviewReport.resume,
+            selfDescription: interviewReport.selfDescription,
+            jobDescription: interviewReport.jobDescription
+        })
+
+        res.setHeader("Content-Type", "application/pdf")
+        res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=job-ready-resume.pdf"
+        )
+
+        return res.send(pdfBuffer)
+
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong"
+        })
+    }
+}
+module.exports = { generateInterviewController, interviewRepoerByIdController, getAllInterviewReports, genereateJobReadyPdfController }
