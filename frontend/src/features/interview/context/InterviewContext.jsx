@@ -1,13 +1,13 @@
 import React, { createContext, useState } from 'react'
-export const context = createContext()
+export const Context = createContext()
 function InterviewContext({ children }) {
-  const [loading, setLoading] = useState(fasle)
+  const [loading, setLoading] = useState(false)
   const [report, setReport] = useState(null)
   const [reports, setReports] = useState([])
   return (
-    <context.Provider value={{ loading, setLoading, report, setReport, reports, setReports }}>
+    <Context.Provider value={{ loading, setLoading, report, setReport, reports, setReports }}>
       {children}
-    </context.Provider>
+    </Context.Provider>
   )
 }
 

@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { generateInterviewReport, getInterviewReportById, getInterviewAllReport } from "../services/interview.api";
-import { context } from "../context/interviewContext";
+import { Context } from "../context/interviewContext";
 
 export function useInterview() {
-    const context = useContext(context)
+    const context = useContext(Context)
     const { loading, setLoading, report, setReport, reports, setReports } = context
     async function generateReport({ jobdescribe, selfdescribe, resumeFile }) {
         setLoading(true)
