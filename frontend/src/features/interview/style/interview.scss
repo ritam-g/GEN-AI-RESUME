@@ -51,6 +51,43 @@ $severity-low: #3fb950;
     flex-shrink: 0;
 }
 
+// ── Nav Content Wrapper ───────────────────────────────────────────────────────
+.nav-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+// ── Download Button ───────────────────────────────────────────────────────────
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 0.5rem;
+    font-family: $font-stack;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s, transform 0.1s;
+
+    &:active {
+        transform: scale(0.97);
+    }
+}
+
+.primary-button {
+    background: linear-gradient(135deg, $accent 0%, color.adjust($accent, $lightness: -10%) 100%);
+    color: #fff;
+
+    &:hover {
+        opacity: 0.88;
+    }
+}
+
 // ── Left Nav ─────────────────────────────────────────────────────────────────
 .interview-nav {
     width: 220px;
@@ -59,7 +96,7 @@ $severity-low: #3fb950;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 0.25rem;
+    gap: 1rem;
 
 
 
