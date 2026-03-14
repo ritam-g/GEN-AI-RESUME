@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { generateInterviewReport, getInterviewReportById, getInterviewAllReport, generateResumePdf } from "../services/interview.api";
 import { Context } from "../context/interviewContext";
+import toast from "react-hot-toast";
 
 export function useInterview() {
     const context = useContext(Context)
@@ -11,9 +12,11 @@ export function useInterview() {
 
             const res = await generateInterviewReport({ jobdescribe, selfdescribe, resumeFile })
             setReport(res.interviewReport)
+            toast.success("Intelligence report generated!")
             return res.interviewReport
         } catch (err) {
             console.log(err);
+            toast.error(err.response?.data?.message || "Failed to generate report")
             throw err
 
         } finally {
@@ -61,6 +64,7 @@ export function useInterview() {
             link.setAttribute("download", `resume_${interviewReportId}.pdf`)
             document.body.appendChild(link)
             link.click()
+            toast.success("PDF Downloaded successfully")
         }
         catch (error) {
             console.log("PDF Download Error:", error)
@@ -70,14 +74,14 @@ export function useInterview() {
                 reader.onload = () => {
                     try {
                         const errorData = JSON.parse(reader.result);
-                        alert(`Download Failed: ${errorData.message}`);
+                        toast.error(`Download Failed: ${errorData.message}`);
                     } catch {
-                        alert("Download Failed: Something went wrong with PDF generation");
+                        toast.error("Download Failed: Something went wrong with PDF generation");
                     }
                 };
                 reader.readAsText(error.response.data);
             } else {
-                alert("Download Failed: Network Error");
+                toast.error("Download Failed: Network Error or Server down");
             }
         } finally {
             setLoading(false)

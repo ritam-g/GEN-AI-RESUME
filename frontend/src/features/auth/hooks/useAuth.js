@@ -4,6 +4,8 @@ import { context } from "../context/AuthContext";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
+import toast from "react-hot-toast";
+
 export function useAuth() {
     const { loading, setLoading, user, setUser } = useContext(context)
     //NOTE - flow of the code 
@@ -17,9 +19,10 @@ export function useAuth() {
             // FIX: Store user in localStorage to persist session across page reloads
             // This prevents 401 errors because we can check localStorage before calling /api/auth/getme
             localStorage.setItem('user', JSON.stringify(data.user))
-
+            toast.success("Welcome back!", { id: 'login-success' })
             return data.user
         } catch (err) {
+            toast.error(err.response?.data?.message || "Login failed. Please check your credentials.")
             throw err
         } finally {
             setLoading(false)
@@ -30,9 +33,10 @@ export function useAuth() {
             setLoading(true)
             const res = await register({ username, email, password })
             setUser(res.user)
-
+            toast.success("Account created successfully!")
             return res.user
         } catch (err) {
+            toast.error(err.response?.data?.message || "Registration failed. Please try again.")
             throw err
         } finally {
             setLoading(false)
@@ -45,7 +49,9 @@ export function useAuth() {
             setUser(null)
             // FIX: Clear user from localStorage on logout
             localStorage.removeItem('user')
+            toast.success("Logged out successfully")
         } catch (err) {
+            toast.error("Logout failed")
             throw err
         } finally {
             setLoading(false)
