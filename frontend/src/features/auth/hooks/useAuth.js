@@ -69,25 +69,6 @@ export function useAuth() {
      * even when the user was not logged in, causing 401 Unauthorized errors.
      * Now we check if user exists in localStorage before making the API call.
      */
-    useEffect(() => {
-        async function getAndSetUser() {
-            // Check if user was previously logged in (stored in localStorage)
-            const storedUser = localStorage.getItem('user')
-            if (storedUser) {
-                try {
-                    await handelGetUser()
-                } catch (err) {
-                    // Token invalid or expired, clear storage
-                    localStorage.removeItem('user')
-                    setLoading(false)
-                }
-            } else {
-                setLoading(false)
-            }
-        }
-        getAndSetUser()
-    }, [])
-
     return { handelUserLogin, handelRegisterUser, loading, user, handelUserLogout, handelGetUser }
 
 }

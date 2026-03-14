@@ -16,13 +16,38 @@ const Home = () => {
         navigate(`/interview/${data._id}`)
     }
     useEffect(() => {
-        async function call() {
-            await getUserAllReports()
-        }
-        call()
-    }, [])
+    async function call() {
+      await getUserAllReports()
+    }
+    call()
+  }, [])
 
-    return (
+  const formatDate = (report) => {
+    try {
+      // Priority 1: Use createdAt (managed by mongoose timestamps)
+      if (report.createdAt) {
+        return new Date(report.createdAt).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+      // Priority 2: Extract from MongoDB ObjectId (the top 5% dev trick)
+      if (report._id && report._id.length === 24) {
+        const timestamp = parseInt(report._id.substring(0, 8), 16) * 1000;
+        return new Date(timestamp).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+      return 'Recent';
+    } catch (e) {
+      return 'Recent';
+    }
+  };
+
+  return (
         <main className='home-page'>
             {loading && <Loader message="Analyzing Profile..." />}
 
@@ -141,18 +166,18 @@ const Home = () => {
                                             <polyline points="10 9 9 9 8 9"></polyline>
                                         </svg>
                                     </div>
-                                    <div className='report-card__content'>
-                                        <h3>{report.title || report.jobTitle || 'Untitled Position'}</h3>
-                                        <div className='report-card__meta'>
-                                            <span className='report-card__date'>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                                </svg>
-                                                {new Date(report.createdAt || parseInt(report._id.substring(0, 8), 16) * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                            </span>
+                                        <div className='report-card__content'>
+                                            <h3>{report.title || report.jobTitle || 'Untitled Position'}</h3>
+                                            <div className='report-card__meta'>
+                                                <span className='report-card__date'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                                    </svg>
+                                                    {formatDate(report)}
+                                                </span>
                                             {report.matchScore && (
                                                 <span className={`report-card__score ${report.matchScore >= 80 ? 'score--high' : report.matchScore >= 60 ? 'score--mid' : 'score--low'}`}>
                                                     {report.matchScore}% Match
