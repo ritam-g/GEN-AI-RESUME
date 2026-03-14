@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview'
 import { useNavigate } from 'react-router'
+import Loader from '../../../components/Loader/Loader'
 
 const Home = () => {
     const [selfDescription, setselfDescription] = useState("")
@@ -23,6 +24,7 @@ const Home = () => {
 
     return (
         <main className='home-page'>
+            {loading && <Loader message="Analyzing Profile..." />}
 
             {/* Page Header */}
             <header className='page-header'>

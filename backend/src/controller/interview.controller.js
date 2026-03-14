@@ -13,28 +13,30 @@ async function generateInterviewController(req, res) {
         const resumeFile = req.file
         // console.log('hit');
 
-        if (!resumeFile) {
-            return res.status(400).json({ message: "resume file is required" })
-        }
-
         const { jobdescribe, selfdescribe } = req.body
-        //NOTE - guard required fields before PDF parsing and AI calls.
+        
         if (!jobdescribe || !selfdescribe) {
-            return res.status(400).json({ message: "jobdescribe and selfdescribe are required" })
+            return res.status(400).json({ message: "jobdescribe is required" })
         }
 
-        // read pdf buffer using pdf-parse v2 API
-        const parser = new PDFParse({ data: resumeFile.buffer })
-        let resumeContent;
-        try {
-            resumeContent = await parser.getText()
-        } finally {
-            await parser.destroy().catch(() => { })
+        if (!resumeFile && !selfdescribe) {
+            return res.status(400).json({ message: "Either resume file or self description is required" })
         }
 
-        //REVIEW - empty PDF text usually means scanned/image-only resume or bad file content.
-        if (!resumeContent?.text?.trim()) {
-            return res.status(400).json({ message: "unable to extract text from resume pdf" })
+        let resumeContent = { text: "" };
+        if (resumeFile) {
+            // read pdf buffer using pdf-parse v2 API
+            const parser = new PDFParse({ data: resumeFile.buffer })
+            try {
+                resumeContent = await parser.getText()
+            } finally {
+                await parser.destroy().catch(() => { })
+            }
+
+            //REVIEW - empty PDF text usually means scanned/image-only resume or bad file content.
+            if (!resumeContent?.text?.trim()) {
+                return res.status(400).json({ message: "unable to extract text from resume pdf" })
+            }
         }
 
         //NOTE - using ai service for creating the interview report based on the job description ,resume and self description of the candidate

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview'
 import { useParams } from 'react-router'
+import Loader from '../../../components/Loader/Loader'
 
 const NAV_ITEMS = [
   {
@@ -123,15 +124,7 @@ const Interview = () => {
   // because the API call to fetch the report had not completed yet when the component first rendered.
   // Now we check if loading is true OR if report is null, and show a loading message until data is ready.
   if (loading || !report) {
-    return (
-      <div className='interview-page'>
-        <div className='interview-layout' style={{ justifyContent: 'center', alignItems: 'center', padding: '2rem' }}>
-          <div style={{ textAlign: 'center', color: '#7d8590' }}>
-            <p>Loading interview report...</p>
-          </div>
-        </div>
-      </div>
-    )
+    return <Loader message="Loading Report..." />
   }
 
   const scoreColor =
