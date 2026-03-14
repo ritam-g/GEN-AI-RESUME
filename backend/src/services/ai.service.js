@@ -157,14 +157,37 @@ async function generatePdfFromHtml(htmlContent) {
     let browser;
 
     try {
+        let exePath = process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath();
+        
+        // Render common paths fallback
+        const commonPaths = [
+            "/opt/render/project/puppeteer/chrome/linux-133.0.6943.126/chrome-linux64/chrome",
+            "/usr/bin/google-chrome-stable",
+            "/usr/bin/google-chrome",
+            "/opt/google/chrome/chrome"
+        ];
+        
+        const fs = require('fs');
+        if (!fs.existsSync(exePath)) {
+            for (const path of commonPaths) {
+                if (fs.existsSync(path)) {
+                    exePath = path;
+                    break;
+                }
+            }
+        }
+
+        console.log("Launching Puppeteer with path:", exePath);
+        
         browser = await puppeteer.launch({
             headless: true,
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
+            executablePath: exePath,
             args: [
                 "--no-sandbox",
                 "--disable-setuid-sandbox",
                 "--disable-dev-shm-usage",
-                "--disable-gpu"
+                "--disable-gpu",
+                "--font-render-hinting=none"
             ]
         });
 
